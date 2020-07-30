@@ -28,9 +28,71 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Widget buildButton() {
+  String output = "0";
+  String _output = "0";
+  double num1 = 0.0;
+  double num2 = 0.0;
+  String operand = "";
+
+  buttonPressed(String buttonText) {
+    if (buttonText == "CLEAR") {
+      _output = "0";
+      num1 = 0.0;
+      num2 = 0.0;
+      operand = "";
+    } else if (buttonText == "+" ||
+        buttonText == "-" ||
+        buttonText == "/" ||
+        buttonText == "X") {
+      num1 = double.parse(output);
+
+      operand = buttonText;
+
+      _output = "0";
+    } else if (buttonText == ".") {
+      if (_output.contains(".")) {
+        print("Already conatains a decimals");
+        return;
+      } else {
+        _output = _output + buttonText;
+      }
+    } else if (buttonText == "=") {
+      num2 = double.parse(output);
+
+      if (operand == "+") {
+        _output = (num1 + num2).toString();
+      }
+      if (operand == "-") {
+        _output = (num1 - num2).toString();
+      }
+      if (operand == "X") {
+        _output = (num1 * num2).toString();
+      }
+      if (operand == "/") {
+        _output = (num1 / num2).toString();
+      }
+
+      num1 = 0.0;
+      num2 = 0.0;
+      operand = "";
+    } else {
+      _output = _output + buttonText;
+    }
+
+    print(_output);
+
+    setState(() {
+      output = double.parse(_output).toStringAsFixed(2);
+    });
+  }
+
+  Widget buildButton(String buttonText) {
     return Expanded(
-      child: RaisedButton(child: Text("1"), onPressed: () => {}),
+      child: RaisedButton(
+          child: Text(buttonText,
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+          padding: EdgeInsets.all(24.0),
+          onPressed: () => buttonPressed(buttonText)),
     );
   }
 
@@ -41,22 +103,62 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text(widget.title),
         ),
         body: Container(
-          child: Column(children: <Widget>[
-            Text("0"),
-            Expanded(
-              child: Divider(),
+            child: Column(children: <Widget>[
+          Container(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 24),
+              child: Text(output,
+                  style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold))),
+          Expanded(
+            child: Divider(),
+          ),
+          Column(children: <Widget>[
+            Row(
+              children: [
+                buildButton("7"),
+                buildButton("8"),
+                buildButton("9"),
+                buildButton("/")
+              ],
             ),
-             Column(children: <Widget>[
-                Row(
-                  children: [buildButton(), buildButton()],
-                ),
-              ]),
-              Column(children: <Widget>[
-              Row(
-                children: [buildButton(), buildButton()],
-              ),
-            ])
           ]),
-        ));
+          Column(children: <Widget>[
+            Row(
+              children: [
+                buildButton("4"),
+                buildButton("5"),
+                buildButton("6"),
+                buildButton("X")
+              ],
+            ),
+          ]),
+          Column(children: <Widget>[
+            Row(
+              children: [
+                buildButton("1"),
+                buildButton("2"),
+                buildButton("3"),
+                buildButton("-")
+              ],
+            ),
+          ]),
+          Column(children: <Widget>[
+            Row(
+              children: [
+                buildButton(","),
+                buildButton("0"),
+                buildButton("00"),
+                buildButton("+")
+              ],
+            ),
+          ]),
+          Column(children: <Widget>[
+            Row(
+              children: [
+                buildButton("CLEAR"),
+                buildButton("="),
+              ],
+            ),
+          ]),
+        ])));
   }
 }
